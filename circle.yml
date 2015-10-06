@@ -1,0 +1,22 @@
+general:
+  branches:
+    ignore:
+      - gh-pages
+
+machine:
+  environment:
+    LISP: sbcl-bin
+    PATH: ~/.roswell/bin:$PATH
+
+dependencies:
+  pre:
+    - curl -L https://raw.githubusercontent.com/snmsts/roswell/master/scripts/install-for-ci.sh | sh
+    - ros run -- --version
+
+  cache_directories:
+    - ~/.roswell
+
+test:
+  override:
+    - ros run -- --version
+    - ros -s prove -e '(or (progn (push *default-pathname-defaults* asdf:*central-registry*) (ql:quickload "qi") (prove:run :qi-test)) (uiop:quit -1))'
